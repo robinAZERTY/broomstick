@@ -11,3 +11,6 @@ Axes du projet :
 - Conception SoftWare :
   - Interface esp-PC
   - Conception lecteur capteur
+
+
+pour suivre l'avancement du projet : [planning](https://myjunia-my.sharepoint.com/:x:/g/personal/robin_lecouffe_student_junia_com/EXCvB0gIA_NNoG4O-ostTdIBpugg6I_60N472naK1YS6nw?e=M2SJkk)
