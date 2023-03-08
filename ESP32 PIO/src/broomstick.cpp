@@ -22,6 +22,11 @@ int Broomstick::begin()
 
     if (loadCalibration() < 0)
         return 0; // no calibration found
+    
+    #ifdef BLUETOOTH
+        if (beginBluetooth() < 0)
+            return -2; // bluetooth error
+    #endif
     return 1;     // calibration found
 }
 
@@ -152,23 +157,11 @@ void Broomstick::printData()
     #endif
     Serial.println("");
 }
-int Broomstick::send()
-{
-    if (time - last_send_time >= 1000000 / SENDING_RATE)
-    {
-#ifdef PRINT_ON_SERIAL
-        printData();
-#endif
-        last_send_time = time;
-        return 1; // data sent
-    }
-    return 0; // data not sent because not enough time elapsed
-}
 int Broomstick::run()
 {   
     time = micros();
     compute();
-    send();
+    communicate();
     return 0;
 }
 

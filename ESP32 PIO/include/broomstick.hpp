@@ -10,7 +10,7 @@
 #define GPIO_MAIN_JOY_Y 15
 
 //software configuration
-#define COMPUTING_RATE 5000
+#define COMPUTING_RATE 6000
 #define SENDING_RATE 10
 #define ANALOG_READ_RESOLUTION 12
 #define APPLY_FILTER
@@ -18,9 +18,8 @@
 
 //for DEBUG OR TEST
 #define PRINT_ON_SERIAL
-#ifdef PRINT_ON_SERIAL
-    //#define PRINT_FREQ
-#endif
+//#define PRINT_FREQ
+
 
 //EEPROM configuration
 #define CALIBRATION_EEPROM_ADDRESS 0
@@ -33,6 +32,9 @@ public:
     Broomstick();
     ~Broomstick();
     int begin();
+    int run();
+    
+private:
     int readSensors();
     int applyCorrection();
     int centerCalibration();
@@ -40,8 +42,9 @@ public:
     int saveCalibration();
     int loadCalibration();
     int compute();
-    int send();
-    int run();
+    int sendBluetooth();
+    int beginBluetooth();
+    int communicate();
     void printCalibration();
     void printData();
 
@@ -50,10 +53,8 @@ public:
         int main_joy_x;
         int main_joy_y;
     };
+
     struct Data data;
-
-//private:
-
     struct Calib calib;
     low_pass_filter main_joy_x_filter,main_joy_y_filter;
     bool correction_done=false;
