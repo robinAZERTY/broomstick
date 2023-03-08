@@ -33,20 +33,22 @@ public:
     ~Broomstick();
     int begin();
     int run();
-    
-private:
-    int readSensors();
-    int applyCorrection();
+
     int centerCalibration();
     int extremumCalibration();
     int saveCalibration();
     int loadCalibration();
+
+    void printCalibration();
+    void printData();
+
+private:
+    int readSensors();
+    int applyCorrection();
     int compute();
     int sendBluetooth();
     int beginBluetooth();
     int communicate();
-    void printCalibration();
-    void printData();
 
     struct Data
     {
