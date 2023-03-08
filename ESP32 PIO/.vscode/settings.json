@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "new": "cpp",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "cmath": "cpp"
+    }
+}
