@@ -11,11 +11,11 @@ int Broomstick::begin()
 {
     pinMode(GPIO_MAIN_JOY_X, INPUT);
     pinMode(GPIO_MAIN_JOY_Y, INPUT);
+    pinMode(GPIO_FIRE, INPUT_PULLUP);
     analogReadResolution(ANALOG_READ_RESOLUTION);
 
     main_joy_x_filter.compute_alpha(FILTER_CUTOFF_FREQUENCY, COMPUTING_RATE);
     main_joy_y_filter.compute_alpha(FILTER_CUTOFF_FREQUENCY, COMPUTING_RATE);
-    Serial.print("alpha:"+String(main_joy_x_filter.alpha,4)+"\n");
 
     if (!EEPROM.begin(CALIBRATION_EEPROM_SIZE))
         return -1; // EEPROM error
@@ -23,7 +23,7 @@ int Broomstick::begin()
     if (loadCalibration() < 0)
         return 0; // no calibration found
     
-    #ifdef BLUETOOTH
+    #ifdef USE_BLE
         if (beginBluetooth() < 0)
             return -2; // bluetooth error
     #endif
@@ -31,9 +31,10 @@ int Broomstick::begin()
 }
 
 int Broomstick::readSensors()
-{
+{   
     data.main_joy_x = analogRead(GPIO_MAIN_JOY_X);
     data.main_joy_y = analogRead(GPIO_MAIN_JOY_Y);
+    data.fire       = digitalRead(GPIO_FIRE);
     correction_done = false;
     return 0;
 }
@@ -152,6 +153,7 @@ void Broomstick::printData()
 {
     Serial.print("main_joy_x:" + String(data.main_joy_x));
     Serial.print(",main_joy_y:" + String(data.main_joy_y));
+    Serial.print(",fire:" + String(data.fire));
     #ifdef PRINT_FREQ
         Serial.print(",sample_freq:" + String(1000000.0/dt,2));
     #endif
