@@ -1,21 +1,27 @@
-#ifndef DEMU_HPP
-#define DEMU_HPP
+#ifndef DEMULTIPLEXER_HPP_
+#define DEMULTIPLEXER_HPP_
 
-#include <Arduino.h>
-
-class demultiplexer
-{
+class demultiplexer {
 public:
-    demultiplexer(uint8_t complexity, uint8_t selector_pins[], uint8_t value_pin);
+    demultiplexer(int selector_pins[], int value_pin[], int complexity, int number_of_demu);
     ~demultiplexer();
-    void read();
-    bool get_value(uint8_t index);
+    void update();
+    int* value;
+    int get_value(int index);
+    bool get_change_indicator();
+    bool get_change_index(int index);
 
 private:
     int complexity;
-    uint8_t *selector_pins;
-    uint8_t value_pin;
+    int* selector_pins;
+    int* value_pin;
+    int number_of_demu;
+
     int number_of_value;
-    bool *value;
+    
+    int* value_old;
+    bool* change_indexes;
+    bool change_indicator;
 };
-#endif
+
+#endif /* DEMULTIPLEXER_HPP_ */
