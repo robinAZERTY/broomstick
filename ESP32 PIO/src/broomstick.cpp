@@ -20,6 +20,10 @@ int Broomstick::begin()
     main_joy_y_filter.compute_alpha(FILTER_CUTOFF_FREQUENCY, COMPUTING_RATE);
     throttle_filter.compute_alpha(FILTER_CUTOFF_FREQUENCY, COMPUTING_RATE);
 
+    demu.set_analog(30);
+    demu.set_analog(24);
+    demu.set_analog(26);
+
     if (!EEPROM.begin(CALIBRATION_EEPROM_SIZE))
         return -1; // EEPROM error
 
@@ -38,7 +42,7 @@ int Broomstick::readSensors()
     data.main_joy_x = analogRead(GPIO_MAIN_JOY_X);
     data.main_joy_y = analogRead(GPIO_MAIN_JOY_Y);
     data.throttle = analogRead(GPIO_THROTTLE);
-    data.brake_ = analogRead(GPIO_BREAK);   
+    data.brake_ = !digitalRead(GPIO_BREAK);   
     correction_done = false;
     return 0;
 }
@@ -46,23 +50,33 @@ int Broomstick::readSensors()
 int Broomstick::readPannel()
 {
     demu.update();
-    data.fire = digitalRead(GPIO_FIRE);
-    data.pilot_auto = demu.get_value(8);
-    data.battery = demu.get_value(13);
-    data.engine = demu.get_value(3);
-    data.eject = demu.get_value(14);
-    data.fumigene = demu.get_value(15);
-    data.feux_de_position = demu.get_value(1);
-    data.bp1 = demu.get_value(10);
-    data.bp2 = demu.get_value(7);
-    data.bp3 = demu.get_value(12);
-    data.trains_datterrissage = demu.get_value(11);
-    data.aerofrein_up = demu.get_value(21);
-    data.aerofrein_middle = demu.get_value(19);
-    data.aerofrein_down = demu.get_value(5);
-    data.volet_up = demu.get_value(23);
-    data.volet_middle = demu.get_value(17);
-    data.volet_down = demu.get_value(2);
+    data.enable_pilot_auto = !demu.get_value(10);
+    data.enable_battery = !demu.get_value(15);
+    data.enable_engine = !demu.get_value(21);
+    data.eject = !demu.get_value(9);
+    data.fumigene = !demu.get_value(8);
+    data.feux_de_position = !demu.get_value(17);
+    data.bp1 = !demu.get_value(8);
+    data.bp2 = !demu.get_value(9);
+    data.bp3 = !demu.get_value(19);
+    data.enable_trains_datterrissage = !demu.get_value(12);
+    data.aerofrein_up = !demu.get_value(13);
+    data.aerofrein_middle = !demu.get_value(7);
+    data.aerofrein_down = !demu.get_value(5);
+    data.volet_up = !demu.get_value(23);
+    data.volet_middle = !demu.get_value(3);
+    data.volet_down = !demu.get_value(1);
+    data.parachute = !demu.get_value(0);
+    data.eject = !demu.get_value(14);
+    pad.update(demu.get_value(PAD_CHANNEL));
+    data.fire = !demu.get_value(25);
+    data.rotation_x = demu.get_value(30);
+    data.rotation_y = demu.get_value(24);
+    data.cycle_arm = !demu.get_value(29);
+    data.cycle_mode = !demu.get_value(31);
+    data.contre_mesure = pad.getButton(1);
+    data.bp4 = pad.getButton(2);
+    data.bp5 = pad.getButton(0);
     return 0;
 }
 
@@ -183,11 +197,14 @@ void Broomstick::printData()
     Serial.print(",main_joy_y:" + String(data.main_joy_y));
     Serial.print(",fire:" + String(data.fire));
     Serial.print(",throttle:" + String(data.throttle));
-    Serial.print(",pilot_auto:" + String(data.pilot_auto));
-    Serial.print(",Battery:" + String(data.battery));
-    Serial.print(",Motor:" + String(data.engine));
+    Serial.print(",pilot_auto:" + String(data.enable_pilot_auto));
+    Serial.print(",Battery:" + String(data.enable_battery));
+    Serial.print(",Motor:" + String(data.enable_engine));
     Serial.print(",Eject:" + String(data.eject));
     Serial.print(",frein:" + String(data.brake_));
+    Serial.print(",RX:" + String(data.rotation_x));
+    Serial.print(",RY:" + String(data.rotation_y));
+    //Serial.print(",aerofre")
 
     #ifdef PRINT_FREQ
         Serial.print(",sample_freq:" + String(1000000.0/dt,2));

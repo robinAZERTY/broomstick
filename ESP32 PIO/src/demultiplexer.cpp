@@ -14,6 +14,7 @@ demultiplexer::demultiplexer(int selector_pins[], int value_pin[], int complexit
     this->value = new int[number_of_value];
     this->value_old = new int[number_of_value];
     this->change_indexes = new bool[number_of_value];
+    this->analog_or_digital = new bool[number_of_value];
     this->change_indicator = 0;
 
     for (int i = 0; i < complexity; i++)
@@ -30,8 +31,9 @@ demultiplexer::demultiplexer(int selector_pins[], int value_pin[], int complexit
         this->value[i] = 0;
         this->value_old[i] = 0;
         this->change_indexes[i] = 1;
+        analog_or_digital[i] = 0; // digital by default
+        //analog_or_digital[i] = 1; // analog by default
     }
-
 
     for (int i = 0; i < complexity; i++)
         pinMode(selector_pins[i], OUTPUT);
@@ -46,26 +48,45 @@ demultiplexer::~demultiplexer()
     delete[] value_pin;
 }
 
+void demultiplexer::set_analog(int channel)
+{
+    analog_or_digital[channel] = 1;
+}
+
+void demultiplexer::set_digital(int channel)
+{
+    analog_or_digital[channel] = 0;
+}
+
 void demultiplexer::update()
 {
     change_indicator = 0;
     for (int subChannel = 0; subChannel < number_of_value / number_of_demu; subChannel++)
     {
-        bool A,B,C;
+        bool A, B, C;
         C = subChannel & 0b001;
         B = subChannel & 0b010;
         A = subChannel & 0b100;
         digitalWrite(selector_pins[0], A);
         digitalWrite(selector_pins[1], B);
         digitalWrite(selector_pins[2], C);
-        //Serial.println("A: " + String(A) + " B: " + String(B) + " C: " + String(C));
+        // Serial.println("A: " + String(A) + " B: " + String(B) + " C: " + String(C));
 
-        delayMicroseconds(2);
+        delayMicroseconds(100);
         for (int demu_index = 0; demu_index < number_of_demu; demu_index++)
         {
             int channel = subChannel + demu_index * (number_of_value / number_of_demu);
             value_old[channel] = value[channel];
-            value[channel] = digitalRead(value_pin[demu_index]);
+            if(analog_or_digital[channel])
+            {
+                pinMode(value_pin[demu_index], INPUT);
+                value[channel] = analogRead(value_pin[demu_index]);
+            }
+            else
+            {
+                pinMode(value_pin[demu_index], INPUT_PULLUP);
+                value[channel] = digitalRead(value_pin[demu_index]);
+            }
 
             if (value[channel] != value_old[channel])
             {
@@ -79,7 +100,6 @@ void demultiplexer::update()
         }
     }
 }
-
 
 int demultiplexer::get_value(int index)
 {

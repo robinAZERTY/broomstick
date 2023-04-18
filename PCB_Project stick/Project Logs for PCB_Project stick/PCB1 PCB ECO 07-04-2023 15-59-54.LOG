@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=VCC Pin=R12-2
+Removed Member From Class: ClassName=Sheet1 Member=R12
+Added Pin To Net: NetName=GND Pin=U4-14
+Change Net Name : Old Net Name=Netjoytick1_2_VR1 New Net Name=Netjoytick1_2_VR2
+Change Net Name : Old Net Name=Netjoytick1_2_VR2 New Net Name=Netjoytick1_2_VR1

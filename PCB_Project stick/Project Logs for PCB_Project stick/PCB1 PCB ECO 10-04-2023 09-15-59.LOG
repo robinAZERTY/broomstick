@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=BP_joy Pin=U4-1
+Removed Pin From Net: NetName=Netgachette_1 Pin=U4-2
+Added Pin To Net: NetName=Netgachette_1 Pin=U4-1
+Added Pin To Net: NetName=BP_joy Pin=U4-2

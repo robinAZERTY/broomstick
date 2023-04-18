@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=NetP11_3 Pin=U4-1
+Removed Pin From Net: NetName=Netjoytick1_2_VR2 Pin=U4-2
+Removed Pin From Net: NetName=NetP11_2 Pin=U4-12
+Removed Pin From Net: NetName=Netgachette_1 Pin=U4-13
+Added Pin To Net: NetName=NetP11_2 Pin=U4-1
+Added Pin To Net: NetName=Netgachette_1 Pin=U4-2
+Added Pin To Net: NetName=NetP11_3 Pin=U4-12
+Added Pin To Net: NetName=Netjoytick1_2_VR2 Pin=U4-13

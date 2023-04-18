@@ -10,11 +10,14 @@ public:
     int get_value(int index);
     bool get_change_indicator();
     bool get_change_index(int index);
+    void set_analog(int channel);
+    void set_digital(int channel);
 
 private:
     int complexity;
     int* selector_pins;
     int* value_pin;
+    bool* analog_or_digital;
     int number_of_demu;
 
     int number_of_value;
